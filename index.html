@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Praktika GR — Διαχείριση Πολυκατοικίας & Πρακτικά Γενικής Συνέλευσης</title>
+  <meta name="description" content="100% Local-First εργαλείο υπολογισμού κοινοχρήστων & αυτόνομης θέρμανσης (Π.Δ. 1985) και αυτόματης σύνταξης επίσημων Πρακτικών Γενικής Συνέλευσης πολυκατοικίας.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="min-h-screen bg-slate-900 text-slate-100 flex flex-col transition-colors duration-200">
+
+  <!-- TOP REGULATORY BANNER -->
+  <div class="no-print bg-slate-800/80 border-b border-slate-700/60 py-2 px-4 text-xs font-mono text-slate-400 flex flex-wrap items-center justify-between gap-2">
+    <div class="flex items-center gap-2">
+      <span class="inline-block w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+      <span>Νομοθεσία: Π.Δ. 27.9/7.11.1985 (ΦΕΚ 631 Δ') &bull; Ν. 3741/1929 (Οροφοκτησία) &bull; Αστικός Κώδικας 1002/1117</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="text-slate-400">100% Local-First &bull; Ιδιωτικότητα &bull; Μηδενικό Κόστος APIs</span>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="no-print border-b border-slate-800 bg-slate-900/95 sticky top-0 z-40 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
+          <i data-lucide="building-2" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-1.5">
+              Praktika GR
+              <span class="text-xs px-2 py-0.5 rounded font-mono font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">v1.0</span>
+            </h1>
+          </div>
+          <p class="text-xs text-slate-400 hidden sm:block">Διαχείριση Πολυκατοικίας &bull; Υπολογισμός Θέρμανσης &bull; Πρακτικά Γ.Σ.</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Pro Upgrade Pill -->
+        <button onclick="openProModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 text-white shadow-sm transition">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+          <span>Pro Άδεια 25€</span>
+        </button>
+
+        <!-- Theme Toggle -->
+        <button id="themeToggleBtn" onclick="toggleTheme()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition" title="Εναλλαγή Θέματος">
+          <i data-lucide="sun" id="themeIcon" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- NAVIGATION TABS -->
+  <nav class="no-print bg-slate-800/40 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 overflow-x-auto py-2">
+      <button onclick="switchTab('expenses')" id="tabBtn-expenses" class="tab-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-2 transition bg-blue-600 text-white">
+        <i data-lucide="calculator" class="w-4 h-4"></i>
+        <span>1. Κατανομή Κοινοχρήστων & Θέρμανσης</span>
+      </button>
+      <button onclick="switchTab('assembly')" id="tabBtn-assembly" class="tab-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-2 transition text-slate-400 hover:text-white hover:bg-slate-800">
+        <i data-lucide="file-text" class="w-4 h-4"></i>
+        <span>2. Πρακτικά Γενικής Συνέλευσης & Απαρτία</span>
+      </button>
+      <button onclick="switchTab('notices')" id="tabBtn-notices" class="tab-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-2 transition text-slate-400 hover:text-white hover:bg-slate-800">
+        <i data-lucide="mail" class="w-4 h-4"></i>
+        <span>3. Ειδοποιητήρια Πληρωμής</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
+
+    <!-- TAB 1: EXPENSES & HEATING -->
+    <section id="tabContent-expenses" class="flex flex-col gap-6">
+      
+      <!-- Top Actions & Presets -->
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-800/50 border border-slate-800 p-4 rounded-xl">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-mono text-slate-400">Έτοιμα Παραδείγματα:</span>
+          <button onclick="loadExpensePreset('standard_8_apt')" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5">
+            <i data-lucide="layers" class="w-3.5 h-3.5 text-blue-400"></i>
+            <span>8 Διαμερίσματα (Ωρομέτρηση)</span>
+          </button>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="calculateAndRenderExpenses()" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-sm transition flex items-center gap-1.5">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+            <span>Επανυπολογισμός</span>
+          </button>
+          <button onclick="exportExpensesMarkdown()" class="px-3 py-2 rounded-lg text-xs sm:text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            <span>Export Markdown</span>
+          </button>
+          <button onclick="window.print()" class="px-3 py-2 rounded-lg text-xs sm:text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5">
+            <i data-lucide="printer" class="w-4 h-4"></i>
+            <span>Εκτύπωση A4</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Expense Summary Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="bg-slate-800/60 border border-slate-800 rounded-xl p-4">
+          <span class="text-xs font-mono text-slate-400 block mb-1">Γενικά Κοινόχρηστα</span>
+          <span id="sumGeneral" class="text-xl sm:text-2xl font-bold text-white">220.00 €</span>
+          <span class="text-[11px] text-slate-500 block mt-1">Καθαριότητα, ΔΕΗ, ΕΥΔΑΠ</span>
+        </div>
+        <div class="bg-slate-800/60 border border-slate-800 rounded-xl p-4">
+          <span class="text-xs font-mono text-slate-400 block mb-1">Ανελκυστήρας</span>
+          <span id="sumElevator" class="text-xl sm:text-2xl font-bold text-white">140.00 €</span>
+          <span class="text-[11px] text-slate-500 block mt-1">Συντήρηση & Πιστοποίηση</span>
+        </div>
+        <div class="bg-slate-800/60 border border-slate-800 rounded-xl p-4">
+          <span class="text-xs font-mono text-slate-400 block mb-1">Θέρμανση (Π.Δ. 1985)</span>
+          <span id="sumHeating" class="text-xl sm:text-2xl font-bold text-blue-400">780.00 €</span>
+          <span id="sumHeatingSplit" class="text-[11px] text-slate-500 block mt-1">Πάγιο 30% / Κατανάλωση 70%</span>
+        </div>
+        <div class="bg-slate-800/60 border border-slate-800 rounded-xl p-4">
+          <span class="text-xs font-mono text-slate-400 block mb-1">Σύνολο Πολυκατοικίας</span>
+          <span id="sumGrandTotal" class="text-xl sm:text-2xl font-bold text-emerald-400">1,240.00 €</span>
+          <span class="text-[11px] text-slate-500 block mt-1">+100€ Αποθεματικό</span>
+        </div>
+      </div>
+
+      <!-- Apartments Table -->
+      <div class="bg-slate-800/70 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
+        <div class="p-4 border-b border-slate-700/60 flex items-center justify-between">
+          <h3 class="text-sm font-bold text-white flex items-center gap-2">
+            <i data-lucide="table" class="w-4 h-4 text-blue-400"></i>
+            <span>Αναλυτικός Πίνακας Κατανομής Δαπανών ανά Διαμέρισμα</span>
+          </h3>
+          <span class="text-xs font-mono text-slate-400">Σύνολο: 8 Ιδιοκτησίες</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <thead class="bg-slate-800/90 text-slate-400 font-mono text-xs uppercase border-b border-slate-700/60">
+              <tr>
+                <th class="py-3 px-4">Διαμέρισμα / Ιδιοκτήτης</th>
+                <th class="py-3 px-3">Χιλιοστά (‰)</th>
+                <th class="py-3 px-3">Ώρες</th>
+                <th class="py-3 px-3">Γενικά (€)</th>
+                <th class="py-3 px-3">Ασανσέρ (€)</th>
+                <th class="py-3 px-3">Πάγιο Θέρμ. (€)</th>
+                <th class="py-3 px-3">Ωρομέτρηση (€)</th>
+                <th class="py-3 px-4 font-bold text-right text-emerald-400">Πληρωτέο (€)</th>
+              </tr>
+            </thead>
+            <tbody id="expensesTableBody" class="divide-y divide-slate-800 text-slate-300">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: GENERAL ASSEMBLY MINUTES -->
+    <section id="tabContent-assembly" class="hidden flex-col gap-6">
+      
+      <!-- Top Banner & Quorum Evaluation -->
+      <div class="bg-slate-800/50 border border-slate-800 p-6 rounded-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20 mb-2">
+            <i data-lucide="scale" class="w-3.5 h-3.5"></i>
+            <span>Ν. 3741/1929 &bull; Αστικός Κώδικας</span>
+          </span>
+          <h2 class="text-xl font-bold text-white">Σύνταξη Πρακτικών Γενικής Συνέλευσης</h2>
+          <p class="text-xs text-slate-400 mt-1">Αυτόματος έλεγχος απαρτίας, ψηφοφορίας και παραγωγής έγκυρου πρακτικού με ρήτρα απαλλαγής.</p>
+        </div>
+
+        <!-- Quorum Badge -->
+        <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center gap-4 min-w-[260px]">
+          <div class="w-12 h-12 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <i data-lucide="users" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <span class="text-xs font-mono text-slate-400 block">Παρόντα Χιλιοστά:</span>
+            <span id="quorumMilliemesDisplay" class="text-2xl font-bold text-white">830 / 1000</span>
+            <span id="quorumStatusBadge" class="text-xs font-semibold text-emerald-400 block">✅ ΝΟΜΙΜΗ ΑΠΑΡΤΙΑ</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attendance & Voting Form -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Left: Attendees Table -->
+        <div class="bg-slate-800/70 border border-slate-800 rounded-xl p-5 flex flex-col gap-4">
+          <div class="flex items-center justify-between border-b border-slate-700/60 pb-3">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i data-lucide="check-square" class="w-4 h-4 text-blue-400"></i>
+              <span>Παρουσιολόγιο & Ψηφοφορία Συνιδιοκτητών</span>
+            </h3>
+            <span class="text-xs font-mono text-slate-400">6 Ιδιοκτησίες</span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-800/80 text-slate-400 font-mono text-[11px]">
+                <tr>
+                  <th class="py-2 px-3">Διαμ.</th>
+                  <th class="py-2 px-3">Ιδιοκτήτης</th>
+                  <th class="py-2 px-2">Χιλ. (‰)</th>
+                  <th class="py-2 px-2 text-center">Παρών</th>
+                  <th class="py-2 px-3">Ψήφος</th>
+                </tr>
+              </thead>
+              <tbody id="assemblyAttendanceBody" class="divide-y divide-slate-800 text-slate-300">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right: Live Minutes Document Preview -->
+        <div class="bg-slate-800/70 border border-slate-800 rounded-xl p-5 flex flex-col gap-4">
+          <div class="flex items-center justify-between border-b border-slate-700/60 pb-3">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i data-lucide="file-check" class="w-4 h-4 text-emerald-400"></i>
+              <span>Επίσημο Πρακτικό Γ.Σ. (Live Προεπισκόπηση)</span>
+            </h3>
+            <div class="flex items-center gap-2">
+              <button onclick="copyAssemblyMinutes()" class="px-2.5 py-1 rounded text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition flex items-center gap-1">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span id="copyMinutesBtnText">Αντιγραφή</span>
+              </button>
+              <button onclick="window.print()" class="px-2.5 py-1 rounded text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white transition flex items-center gap-1">
+                <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                <span>Εκτύπωση</span>
+              </button>
+            </div>
+          </div>
+
+          <pre id="assemblyMinutesOutput" class="p-4 bg-slate-900 rounded-xl font-mono text-xs text-slate-300 whitespace-pre-wrap overflow-y-auto max-h-[500px] border border-slate-800"></pre>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- TAB 3: EXPENSE NOTICES (ΕΙΔΟΠΟΙΗΤΗΡΙΑ) -->
+    <section id="tabContent-notices" class="hidden flex-col gap-6">
+      <div class="bg-slate-800/50 border border-slate-800 p-4 rounded-xl flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <label class="text-xs font-mono text-slate-400">Επιλέξτε Διαμέρισμα:</label>
+          <select id="noticeAptSelect" onchange="renderExpenseNotice()" class="bg-slate-900 border border-slate-700 text-white text-xs sm:text-sm rounded-lg px-3 py-1.5 focus:ring-blue-500 focus:border-blue-500">
+            <!-- Populated via JS -->
+          </select>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="copyNoticeMarkdown()" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            <span id="copyNoticeBtnText">Αντιγραφή Markdown</span>
+          </button>
+          <button onclick="window.print()" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white transition flex items-center gap-1.5">
+            <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+            <span>Εκτύπωση Ειδοποιητηρίου</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-slate-800/70 border border-slate-800 rounded-xl p-6 print-page max-w-3xl mx-auto w-full">
+        <pre id="expenseNoticeOutput" class="font-mono text-xs text-slate-300 whitespace-pre-wrap"></pre>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- PRO MODAL -->
+  <div id="proModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 flex flex-col gap-4 shadow-xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2 text-white font-bold text-base">
+          <i data-lucide="sparkles" class="w-5 h-5 text-blue-400"></i>
+          <span>Praktika GR Pro — 25€ Εφάπαξ</span>
+        </div>
+        <button onclick="closeProModal()" class="text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <p class="text-xs text-slate-300 leading-relaxed">
+        Ξεκλειδώστε την πλήρη σουίτα διαχείρισης πολυκατοικίας:
+      </p>
+      <ul class="text-xs text-slate-400 space-y-2 font-mono">
+        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Απεριόριστα διαμερίσματα & ιστορικό μηνών</li>
+        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Έτοιμα PDF ειδοποιητήρια με QR code IRIS</li>
+        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Πλήρες αρχείο πρακτικών Γ.Σ. σε DOCX/PDF</li>
+        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> 100% ασφαλές via Payhip (Merchant of Record)</li>
+      </ul>
+      <a href="https://payhip.com" target="_blank" class="w-full py-2.5 rounded-xl font-bold text-xs text-center bg-blue-600 hover:bg-blue-500 text-white shadow-md transition flex items-center justify-center gap-2 mt-2">
+        <span>Απόκτηση Άδειας 25€ (Payhip MoR)</span>
+        <i data-lucide="external-link" class="w-4 h-4"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="no-print border-t border-slate-800 bg-slate-900 py-6 mt-auto text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <span>&copy; 2026 Praktika GR &bull; Conversionlogic Suite</span>
+      <span>100% Client-Side Memory &bull; 0€ Server Costs</span>
+    </div>
+  </footer>
+
+  <!-- App Script -->
+  <script src="engine.js"></script>
+  <script>
+    let currentBuildingData = JSON.parse(JSON.stringify(window.SAMPLE_BUILDINGS.standard_8_apt));
+    let currentAssemblyData = JSON.parse(JSON.stringify(window.SAMPLE_BUILDINGS.annual_assembly.assemblyInfo));
+    let lastCalcResult = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      calculateAndRenderExpenses();
+      initAssemblyTab();
+      initNoticesTab();
+      lucide.createIcons();
+    });
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.className = "tab-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-2 transition text-slate-400 hover:text-white hover:bg-slate-800";
+      });
+      const activeBtn = document.getElementById(`tabBtn-${tabId}`);
+      if (activeBtn) {
+        activeBtn.className = "tab-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-2 transition bg-blue-600 text-white";
+      }
+
+      document.getElementById('tabContent-expenses').classList.add('hidden');
+      document.getElementById('tabContent-assembly').classList.add('hidden');
+      document.getElementById('tabContent-notices').classList.add('hidden');
+
+      const content = document.getElementById(`tabContent-${tabId}`);
+      if (content) {
+        content.classList.remove('hidden');
+        content.classList.add('flex');
+      }
+      lucide.createIcons();
+    }
+
+    function calculateAndRenderExpenses() {
+      lastCalcResult = window.praktikaEngine.calculateExpenses(currentBuildingData);
+      const totals = lastCalcResult.totals;
+
+      document.getElementById('sumGeneral').innerText = `${totals.generalExp.toFixed(2)} €`;
+      document.getElementById('sumElevator').innerText = `${totals.elevatorExp.toFixed(2)} €`;
+      document.getElementById('sumHeating').innerText = `${totals.heatingTotal.toFixed(2)} €`;
+      document.getElementById('sumGrandTotal').innerText = `${totals.grandTotal.toFixed(2)} €`;
+
+      const tbody = document.getElementById('expensesTableBody');
+      tbody.innerHTML = '';
+
+      lastCalcResult.breakdown.forEach((item, idx) => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-800/40 transition";
+        tr.innerHTML = `
+          <td class="py-3 px-4">
+            <span class="font-bold text-white block">${item.name}</span>
+            <span class="text-xs text-slate-500 font-mono">${item.owner}</span>
+          </td>
+          <td class="py-3 px-3 font-mono">${item.milliemesTotal}‰</td>
+          <td class="py-3 px-3 font-mono text-blue-400">${item.heatingHours} h</td>
+          <td class="py-3 px-3 font-mono">${item.generalShare.toFixed(2)} €</td>
+          <td class="py-3 px-3 font-mono">${item.elevatorShare.toFixed(2)} €</td>
+          <td class="py-3 px-3 font-mono">${item.heatingFixedShare.toFixed(2)} €</td>
+          <td class="py-3 px-3 font-mono">${item.heatingVariableShare.toFixed(2)} €</td>
+          <td class="py-3 px-4 font-mono font-bold text-right text-emerald-400 text-sm sm:text-base">${item.totalToPay.toFixed(2)} €</td>
+        `;
+        tbody.appendChild(tr);
+      });
+      initNoticesTab();
+    }
+
+    function loadExpensePreset(presetKey) {
+      currentBuildingData = JSON.parse(JSON.stringify(window.SAMPLE_BUILDINGS[presetKey]));
+      calculateAndRenderExpenses();
+    }
+
+    function exportExpensesMarkdown() {
+      if (!lastCalcResult) return;
+      let md = `# Πίνακας Κοινοχρήστων & Θέρμανσης\n\n`;
+      md += `**Πολυκατοικία:** ${lastCalcResult.buildingInfo.address}  \n`;
+      md += `**Μήνας:** ${lastCalcResult.buildingInfo.period}  \n`;
+      md += `**Συνολική Δαπάνη:** ${lastCalcResult.totals.grandTotal} €  \n\n`;
+      md += `| Διαμέρισμα | Ιδιοκτήτης | Χιλιοστά | Ώρες | Γενικά | Ασανσέρ | Πάγιο Θέρμ. | Ωρομέτρηση | Σύνολο |\n`;
+      md += `|:---|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n`;
+      lastCalcResult.breakdown.forEach(b => {
+        md += `| ${b.name} | ${b.owner} | ${b.milliemesTotal}‰ | ${b.heatingHours}h | ${b.generalShare}€ | ${b.elevatorShare}€ | ${b.heatingFixedShare}€ | ${b.heatingVariableShare}€ | **${b.totalToPay}€** |\n`;
+      });
+      const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `koinochrista-${new Date().toISOString().split('T')[0]}.md`;
+      a.click();
+    }
+
+    // Assembly Logic
+    function initAssemblyTab() {
+      const tbody = document.getElementById('assemblyAttendanceBody');
+      tbody.innerHTML = '';
+
+      currentAssemblyData.attendance.forEach((att, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="py-2.5 px-3 font-bold text-white">${att.apt}</td>
+          <td class="py-2.5 px-3 text-slate-300">${att.owner}</td>
+          <td class="py-2.5 px-2 font-mono text-slate-400">${att.milliemes}‰</td>
+          <td class="py-2.5 px-2 text-center">
+            <input type="checkbox" ${att.present ? 'checked' : ''} onchange="togglePresent(${idx})" class="rounded bg-slate-900 border-slate-700 text-blue-500 focus:ring-0">
+          </td>
+          <td class="py-2.5 px-3">
+            <select onchange="updateVote(${idx}, this.value)" class="bg-slate-900 border border-slate-700 text-xs rounded px-2 py-1 text-slate-200">
+              <option value="FOR" ${att.vote === 'FOR' ? 'selected' : ''}>Υπέρ</option>
+              <option value="AGAINST" ${att.vote === 'AGAINST' ? 'selected' : ''}>Κατά</option>
+              <option value="ABSTAIN" ${att.vote === 'ABSTAIN' ? 'selected' : ''}>Λευκό</option>
+            </select>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      renderAssemblyMinutes();
+    }
+
+    function togglePresent(idx) {
+      currentAssemblyData.attendance[idx].present = !currentAssemblyData.attendance[idx].present;
+      renderAssemblyMinutes();
+    }
+
+    function updateVote(idx, val) {
+      currentAssemblyData.attendance[idx].vote = val;
+      renderAssemblyMinutes();
+    }
+
+    function renderAssemblyMinutes() {
+      const evalQuorum = window.praktikaEngine.evaluateQuorum(currentAssemblyData);
+      document.getElementById('quorumMilliemesDisplay').innerText = `${evalQuorum.totalPresentMilliemes} / 1000`;
+      
+      const badge = document.getElementById('quorumStatusBadge');
+      if (evalQuorum.hasQuorum501) {
+        badge.innerText = `✅ ΝΟΜΙΜΗ ΑΠΑΡΤΙΑ (${evalQuorum.totalPresentMilliemes}‰)`;
+        badge.className = "text-xs font-semibold text-emerald-400 block";
+      } else {
+        badge.innerText = `❌ ΑΠΟΥΣΙΑ ΑΠΑΡΤΙΑΣ (${evalQuorum.totalPresentMilliemes}‰ < 501‰)`;
+        badge.className = "text-xs font-semibold text-rose-400 block";
+      }
+
+      const minutesMd = window.praktikaEngine.generateAssemblyMinutes(currentAssemblyData);
+      document.getElementById('assemblyMinutesOutput').innerText = minutesMd;
+    }
+
+    function copyAssemblyMinutes() {
+      const text = document.getElementById('assemblyMinutesOutput').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copyMinutesBtnText');
+        btn.innerText = 'Αντιγράφηκε!';
+        setTimeout(() => btn.innerText = 'Αντιγραφή', 2000);
+      });
+    }
+
+    // Notices Tab
+    function initNoticesTab() {
+      const select = document.getElementById('noticeAptSelect');
+      if (!lastCalcResult || !lastCalcResult.breakdown) return;
+      select.innerHTML = '';
+      lastCalcResult.breakdown.forEach(b => {
+        const opt = document.createElement('option');
+        opt.value = b.id;
+        opt.innerText = `${b.name} (${b.owner}) - ${b.totalToPay.toFixed(2)} €`;
+        select.appendChild(opt);
+      });
+      renderExpenseNotice();
+    }
+
+    function renderExpenseNotice() {
+      const select = document.getElementById('noticeAptSelect');
+      const aptId = select.value || (lastCalcResult && lastCalcResult.breakdown[0] && lastCalcResult.breakdown[0].id);
+      if (!lastCalcResult) return;
+      const md = window.praktikaEngine.generateExpenseNoticeMarkdown(lastCalcResult, aptId);
+      document.getElementById('expenseNoticeOutput').innerText = md;
+    }
+
+    function copyNoticeMarkdown() {
+      const text = document.getElementById('expenseNoticeOutput').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copyNoticeBtnText');
+        btn.innerText = 'Αντιγράφηκε!';
+        setTimeout(() => btn.innerText = 'Αντιγραφή Markdown', 2000);
+      });
+    }
+
+    function openProModal() { document.getElementById('proModal').classList.remove('hidden'); }
+    function closeProModal() { document.getElementById('proModal').classList.add('hidden'); }
+    function toggleTheme() { document.documentElement.classList.toggle('dark'); }
+  </script>
+</body>
+</html>
