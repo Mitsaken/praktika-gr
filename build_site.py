@@ -14,7 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 DIST = ROOT / "dist"
 
-SITE_URL = "https://praktika-gr.pages.dev"
+SITE_URL = "https://mitsaken.github.io/praktika-gr"
 GOOGLE_VERIFY = "cddcb0945a7b4e49"
 
 SVG_ICONS = {
@@ -153,7 +153,9 @@ def build():
     generate_sitemap()
     generate_robots()
     generate_gsc_verification_file()
-    print("✅ Generated sitemap.xml, robots.txt, and GSC verification file")
+    for fname in ("sitemap.xml", "robots.txt", f"google{GOOGLE_VERIFY}.html"):
+        shutil.copy2(DIST / fname, ROOT / fname)
+    print("✅ Generated sitemap.xml, robots.txt, and GSC verification file (synced to root)")
 
     # Create ZIP for Cloudflare Pages
     create_zip()

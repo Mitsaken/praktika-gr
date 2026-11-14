@@ -122,15 +122,22 @@ def test_e2e_playwright():
         assert "ΕΙΔΟΠΟΙΗΤΗΡΙΟ ΠΛΗΡΩΜΗΣ ΚΟΙΝΟΧΡΗΣΤΩΝ" in notice_text, "Notice should have title"
         assert "27.9/7.11.1985" in notice_text, "Notice should cite P.D. 1985"
 
-        # Test Pro Modal
-        page.click("button:has-text('Pro Άδεια 25€')")
+        # Test Pro Modal (viewport centered + non-default button bg)
+        pro_btn = page.locator("button:has-text('Pro Άδεια 25€')")
+        bg_color = pro_btn.evaluate("el => getComputedStyle(el).backgroundColor")
+        assert bg_color not in ("rgb(240, 240, 240)", "rgba(0, 0, 0, 0)", "transparent"), f"Unstyled Pro button background: {bg_color}"
+        pro_btn.click()
         page.wait_for_timeout(200)
         modal = page.locator("#proModal")
         assert modal.is_visible(), "Pro modal should be visible"
+        box = modal.bounding_box()
+        assert box and 0 <= box["y"] < 400, f"Modal off-screen! box={box}"
+        top_hit = page.evaluate("() => { const m = document.querySelector('#proModal'); const r = m.getBoundingClientRect(); const el = document.elementFromPoint(r.left + r.width/2, r.top + r.height/2); return !!el && m.contains(el); }")
+        assert top_hit, "Modal center is covered by another element"
         page.keyboard.press("Escape")
         page.wait_for_timeout(200)
         assert not modal.is_visible(), "Pro modal should close on Escape"
-        print("   -> PASS: Notice slips rendered, Pro modal 25€ verified.")
+        print("   -> PASS: Notice slips rendered, Pro modal 25€ viewport/hit-test verified.")
 
         print("🧪 [Test 6/6] Verifying Mobile Responsiveness @ 390px (Zero Horizontal Scroll)...")
         page.set_viewport_size({"width": 390, "height": 844})

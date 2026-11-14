@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://praktika-gr.pages.dev/sitemap.xml
+Sitemap: https://mitsaken.github.io/praktika-gr/sitemap.xml
