@@ -123,7 +123,7 @@
             <span>8 Διαμερίσματα (Ωρομέτρηση)</span>
           </button>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex flex-wrap items-center gap-2">
           <button onclick="calculateAndRenderExpenses()" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-sm transition flex items-center gap-1.5">
             <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>
             <span>Επανυπολογισμός</span>
@@ -254,12 +254,12 @@
 
         <!-- Right: Live Minutes Document Preview -->
         <div class="bg-slate-800/70 border border-slate-800 rounded-xl p-5 flex flex-col gap-4">
-          <div class="flex items-center justify-between border-b border-slate-700/60 pb-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-700/60 pb-3">
             <h3 class="text-sm font-bold text-white flex items-center gap-2">
               <svg class="icon icon-sm text-emerald" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="m9 15 2 2 4-4"></path></svg>
               <span>Επίσημο Πρακτικό Γ.Σ. (Live Προεπισκόπηση)</span>
             </h3>
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2">
               <button onclick="copyAssemblyMinutes()" class="px-2.5 py-1 rounded text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition flex items-center gap-1">
                 <svg class="icon icon-sm" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>
                 <span id="copyMinutesBtnText">Αντιγραφή</span>
@@ -280,14 +280,14 @@
 
     <!-- TAB 3: EXPENSE NOTICES (ΕΙΔΟΠΟΙΗΤΗΡΙΑ) -->
     <section id="tabContent-notices" class="hidden flex-col gap-6">
-      <div class="bg-slate-800/50 border border-slate-800 p-4 rounded-xl flex items-center justify-between">
-        <div class="flex items-center gap-3">
+      <div class="bg-slate-800/50 border border-slate-800 p-4 rounded-xl flex flex-wrap items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-3">
           <label class="text-xs font-mono text-slate-400">Επιλέξτε Διαμέρισμα:</label>
           <select id="noticeAptSelect" onchange="renderExpenseNotice()" class="bg-slate-900 border border-slate-700 text-white text-xs sm:text-sm rounded-lg px-3 py-1.5 focus:ring-blue-500 focus:border-blue-500">
             <!-- Populated via JS -->
           </select>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex flex-wrap items-center gap-2">
           <button onclick="copyNoticeMarkdown()" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5">
             <svg class="icon icon-sm" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>
             <span id="copyNoticeBtnText">Αντιγραφή Markdown</span>
