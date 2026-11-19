@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Praktika GR — Φύλλο Κοινοχρήστων Π.Δ. 1985 &amp; Πρακτικά Γ.Σ.</title>
+  <meta name="description" content="Ανεξάρτητο Client-Side εργαλείο κατανομής κοινοχρήστων &amp; θέρμανσης (Π.Δ. 27.9/7.11.1985) με έλεγχο 1000‰, πρακτικά Γ.Σ. Ν. 3741/1929 και εκτυπώσιμα ειδοποιητήρια A4.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- TOP REGULATORY STRIP -->
+  <div class="reg-strip no-print">
+    <div class="container reg-inner">
+      <span>Νομική Βάση: Π.Δ. 27.9/7.11.1985 (ΦΕΚ 631 Δ') · Ν. 3741/1929 · Αστικός Κώδικας 1002 &amp; 1117</span>
+      <span>Τοπική Εκτέλεση (100% Browser) · Τεχνικός/Νομικός Έλεγχος: 19/11/2026</span>
+    </div>
+  </div>
+
+  <!-- MASTHEAD -->
+  <header class="masthead no-print">
+    <div class="container masthead-inner">
+      <div>
+        <div class="brand-kicker">CONVERSIONLOGIC · COMMON EXPENSE &amp; ASSEMBLY LEDGER</div>
+        <h1 class="brand-title">Praktika GR</h1>
+        <p class="brand-sub">Αναλυτική Κατανομή Κοινοχρήστων &amp; Θέρμανσης (Π.Δ. 1985) · Πρακτικά Γενικής Συνέλευσης</p>
+      </div>
+      <div>
+        <a href="#early-access" class="nav-jump">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          <span>Πακέτο Excel &amp; SEPA IBAN QR (Waitlist)</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- UNDERLINED NAVIGATION TABS -->
+  <nav class="tab-bar no-print" aria-label="Ενότητες Διαχείρισης">
+    <div class="container tab-list">
+      <button type="button" id="tabBtn-expenses" class="tab-btn active">
+        <span>1. Φύλλο Κατανομής &amp; Θέρμανσης</span>
+      </button>
+      <button type="button" id="tabBtn-assembly" class="tab-btn">
+        <span>2. Πρακτικό Γενικής Συνέλευσης &amp; Απαρτία</span>
+      </button>
+      <button type="button" id="tabBtn-notices" class="tab-btn">
+        <span>3. Ειδοποιητήρια Πληρωμής A4</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="container main-wrap">
+
+    <!-- TAB 1: EXPENSES & HEATING -->
+    <section id="tabContent-expenses" class="panel-section">
+
+      <!-- Preset & Editable Pools Sheet -->
+      <div class="sheet no-print">
+        <div class="toolbar-row">
+          <div class="btn-group">
+            <span class="sheet-meta">Παράδειγμα Πολυκατοικίας:</span>
+            <button type="button" id="presetStandardBtn" class="btn btn-sm">8 Διαμερίσματα (Ωρομέτρηση Π.Δ. 1985)</button>
+          </div>
+          <div class="btn-group">
+            <button type="button" id="recalcBtn" class="btn btn-primary btn-sm">Επανυπολογισμός</button>
+            <button type="button" id="exportExpensesMdBtn" class="btn btn-sm">Λήψη Markdown (.md)</button>
+            <button type="button" id="exportJsonBtn" class="btn btn-sm">Εξαγωγή JSON</button>
+            <button type="button" id="importJsonBtn" class="btn btn-sm">Εισαγωγή JSON</button>
+            <input type="file" id="importJsonInput" accept="application/json,.json" class="hidden" aria-label="Εισαγωγή αρχείου JSON">
+            <button type="button" id="clearStorageBtn" class="btn btn-sm">Καθαρισμός Δεδομένων</button>
+            <button type="button" id="printExpensesBtn" class="btn btn-sm">Εκτύπωση Φύλλου A4</button>
+          </div>
+        </div>
+
+        <div class="pool-grid">
+          <div class="field-group">
+            <label for="inputGeneral">Γενικά Κοινόχρηστα (€)</label>
+            <input type="number" step="0.01" min="0" id="inputGeneral" class="input-text input-num" value="220">
+          </div>
+          <div class="field-group">
+            <label for="inputElevator">Ανελκυστήρας (€)</label>
+            <input type="number" step="0.01" min="0" id="inputElevator" class="input-text input-num" value="140">
+          </div>
+          <div class="field-group">
+            <label for="inputHeating">Θέρμανση / Καύσιμο (€)</label>
+            <input type="number" step="0.01" min="0" id="inputHeating" class="input-text input-num" value="780">
+          </div>
+          <div class="field-group">
+            <label for="inputReserve">Αποθεματικό Ταμείο (€)</label>
+            <input type="number" step="0.01" min="0" id="inputReserve" class="input-text input-num" value="100">
+          </div>
+        </div>
+
+        <div class="fuel-helper-box">
+          <div class="fuel-helper-title">Υπολογιστής Κατανάλωσης Δεξαμενής Πετρελαίου (Αρχικό + Παραλαβές &minus; Τελικό €)</div>
+          <div class="fuel-grid">
+            <div class="field-group">
+              <label for="inputFuelOpening">Αρχικό Απόθεμα (€)</label>
+              <input type="number" step="0.01" min="0" id="inputFuelOpening" class="input-text input-num" value="0">
+            </div>
+            <div class="field-group">
+              <label for="inputFuelPurchases">+ Παραλαβές Περιόδου (€)</label>
+              <input type="number" step="0.01" min="0" id="inputFuelPurchases" class="input-text input-num" value="0">
+            </div>
+            <div class="field-group">
+              <label for="inputFuelClosing">&minus; Τελικό Απόθεμα (€)</label>
+              <input type="number" step="0.01" min="0" id="inputFuelClosing" class="input-text input-num" value="0">
+            </div>
+            <div class="field-group">
+              <button type="button" id="applyFuelCalcBtn" class="btn btn-sm">Υπολογισμός από Δεξαμενή</button>
+            </div>
+          </div>
+          <div id="storageStatusNote" class="storage-status-bar" role="status">Αυτόματη τοπική αποθήκευση προσχεδίου (cl_p5_v1) μόνο στον browser · 0 αποστολές.</div>
+        </div>
+      </div>
+
+      <!-- Explicit 1000‰ Millesimal Integrity Verification -->
+      <div id="milliemesValidationStrip" class="validation-strip">
+        <div>
+          <strong>Έλεγχος Ακεραιότητας Χιλιοστών (1.000‰):</strong>
+          <span id="milliemesCheckText">Γενικά 1.000‰ · Ανελκυστήρα 1.000‰ · Θέρμανσης 1.000‰ (Ισοζυγισμένο)</span>
+        </div>
+        <span class="sheet-meta">Περίοδος: <strong id="buildingPeriodMeta">Νοέμβριος 2026</strong> · Διεύθυνση: <span id="buildingAddressMeta">Ιπποκράτους 124, Αθήνα</span></span>
+      </div>
+
+      <!-- Ledger Summary Row with Double Rule -->
+      <div class="ledger-summary-bar" aria-label="Συγκεντρωτικά Ποσά Πολυκατοικίας">
+        <div class="ledger-cell">
+          <span class="ledger-label">Γενικά Κοινόχρηστα</span>
+          <span id="sumGeneral" class="ledger-val">220.00 €</span>
+          <span class="ledger-sub">Καθαριότητα, ΔΕΗ, ΕΥΔΑΠ</span>
+        </div>
+        <div class="ledger-cell">
+          <span class="ledger-label">Ανελκυστήρας</span>
+          <span id="sumElevator" class="ledger-val">140.00 €</span>
+          <span class="ledger-sub">Συντήρηση &amp; Έλεγχος</span>
+        </div>
+        <div class="ledger-cell">
+          <span class="ledger-label">Θέρμανση (Π.Δ. 1985)</span>
+          <span id="sumHeating" class="ledger-val">780.00 €</span>
+          <span id="sumHeatingSplit" class="ledger-sub">Πάγιο 30% / Ωρομέτρηση 70%</span>
+        </div>
+        <div class="ledger-cell">
+          <span class="ledger-label">Σύνολο Πολυκατοικίας</span>
+          <span id="sumGrandTotal" class="ledger-val">1,240.00 €</span>
+          <span id="sumReserveNote" class="ledger-sub">Συμπεριλαμβάνει +100.00 € Αποθεματικό</span>
+        </div>
+      </div>
+
+      <!-- Accounting Ledger Table -->
+      <div class="sheet">
+        <div class="sheet-header">
+          <div>
+            <h2 class="sheet-title">Αναλυτικό Φύλλο Κατανομής Δαπανών ανά Ιδιοκτησία</h2>
+            <p class="sheet-meta">Μαθηματική κατανομή Π.Δ. 27.9/7.11.1985 (ΦΕΚ 631 Δ') · Ακριβές ισοζύγιο λεπτού ευρώ &amp; προαιρετικό προηγούμενο υπόλοιπο.</p>
+          </div>
+          <span class="sheet-meta" id="apartmentCountLabel">8 Ιδιοκτησίες · Σύνολο Χιλιοστών 1.000‰</span>
+        </div>
+        <div class="table-scroll">
+          <table class="ledger-table">
+            <thead>
+              <tr>
+                <th>Διαμέρισμα / Ιδιοκτήτης</th>
+                <th class="num">Χιλιοστά (‰)</th>
+                <th class="num">Ώρες</th>
+                <th class="num">Γενικά + Αποθ. (€)</th>
+                <th class="num">Ασανσέρ (€)</th>
+                <th class="num">Πάγιο Θέρμ. (€)</th>
+                <th class="num">Ωρομέτρηση (€)</th>
+                <th class="num">Προηγ. Υπόλ. (€)</th>
+                <th class="num">Πληρωτέο (€)</th>
+              </tr>
+            </thead>
+            <tbody id="expensesTableBody"></tbody>
+            <tfoot id="expensesTableFoot"></tfoot>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- TAB 2: GENERAL ASSEMBLY MINUTES -->
+    <section id="tabContent-assembly" class="panel-section hidden">
+      <div class="sheet">
+        <div class="sheet-header">
+          <div>
+            <div class="brand-kicker">Ν. 3741/1929 · ΑΣΤΙΚΟΣ ΚΩΔΙΚΑΣ 1002 &amp; 1117</div>
+            <h2 class="sheet-title">Σύνταξη Πρακτικού Γενικής Συνέλευσης &amp; Υπολογισμός Απαρτίας</h2>
+            <p class="sheet-meta">Έλεγχος πλειοψηφίας άνω των 500/1000 χιλιοστών και αυτόματη ενσωμάτωση ρήτρας απαλλαγής διαχειριστή.</p>
+          </div>
+          <div id="quorumBox" class="quorum-box">
+            <div>
+              <span class="ledger-label">Παρόντα Χιλιοστά Συνιδιοκτησίας</span>
+              <span id="quorumMilliemesDisplay" class="quorum-num">830 / 1000</span>
+              <span id="quorumStatusBadge" class="status-tag">ΝΟΜΙΜΗ ΑΠΑΡΤΙΑ (830‰)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="assembly-grid">
+          <div>
+            <div class="toolbar-row mb-sm">
+              <h3 class="sheet-title">Παρουσιολόγιο &amp; Ψηφοφορία</h3>
+              <span class="sheet-meta">6 Ιδιοκτησίες · 1.000‰</span>
+            </div>
+            <div class="table-scroll">
+              <table class="ledger-table">
+                <thead>
+                  <tr>
+                    <th>Διαμ.</th>
+                    <th>Ιδιοκτήτης</th>
+                    <th class="num">Χιλ. (‰)</th>
+                    <th class="cell-center">Παρών</th>
+                    <th>Ψήφος</th>
+                  </tr>
+                </thead>
+                <tbody id="assemblyAttendanceBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div>
+            <div class="toolbar-row no-print mb-sm">
+              <h3 class="sheet-title">Σχέδιο Πρακτικού Γ.Σ.</h3>
+              <div class="btn-group">
+                <button type="button" id="copyMinutesBtn" class="btn btn-sm">
+                  <span id="copyMinutesBtnText">Αντιγραφή</span>
+                </button>
+                <button type="button" id="printMinutesBtn" class="btn btn-primary btn-sm">Εκτύπωση A4</button>
+              </div>
+            </div>
+            <div id="assemblyMinutesOutput" class="a4-document-preview"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: EXPENSE NOTICES -->
+    <section id="tabContent-notices" class="panel-section hidden">
+      <div class="sheet notice-sheet">
+        <div class="sheet-header no-print">
+          <div class="field-group select-wide">
+            <label for="noticeAptSelect">Επιλογή Ιδιοκτησίας για Ειδοποιητήριο:</label>
+            <select id="noticeAptSelect" class="input-select"></select>
+          </div>
+          <div class="btn-group">
+            <button type="button" id="copyNoticeBtn" class="btn btn-sm">
+              <span id="copyNoticeBtnText">Αντιγραφή Markdown</span>
+            </button>
+            <button type="button" id="printNoticeBtn" class="btn btn-primary btn-sm">Εκτύπωση Ειδοποιητηρίου A4</button>
+          </div>
+        </div>
+        <div id="expenseNoticeOutput" class="a4-document-preview preview-full"></div>
+      </div>
+    </section>
+
+    <!-- STATIC ANCHORED EARLY ACCESS WAITLIST -->
+    <section id="early-access" class="early-access-card no-print" aria-labelledby="eaHeading">
+      <div class="ea-grid">
+        <div>
+          <div class="ea-kicker">0€ VALIDATION MODE · CO-CREATION &amp; UPDATES</div>
+          <div class="price-badge-pill">Σχεδιαζόμενο Πακέτο Pro: 19 € (με ΦΠΑ) · 0 € σήμερα · Λίστα Προτεραιότητας</div>
+          <h2 id="eaHeading" class="ea-title">Πακέτο Διαχείρισης Excel, Πρακτικών Γ.Σ. &amp; SEPA IBAN QR</h2>
+          <p class="ea-desc">Η κατανομή Π.Δ. 1985, η επιλογή αποσύνδεσης Ν. 4495/2017, ο επιμερισμός ενοίκου/ιδιοκτήτη, το ισοζύγιο Hamilton και τα ειδοποιητήρια A4/Markdown παρέχονται ήδη σε 0'' χωρίς εγγραφή. Συμβουλέψτε μας ποιο εργαλείο πολυκατοικίας θέλετε κατά προτεραιότητα:</p>
+          <ul class="ea-list">
+            <li>Excel Π.Δ. 1985 με στήλη κατάστασης θέρμανσης (Ενεργό / Κενό / Αποσυνδεδεμένο)</li>
+            <li>Αυτόνομη γεννήτρια ειδοποιητηρίων A4 με SEPA IBAN QR (EPC069-12) &amp; γραμμή IRIS</li>
+            <li>Πρότυπα προσκλήσεων, εξουσιοδοτήσεων &amp; πρακτικών Γ.Σ. σε DOCX, PDF &amp; Markdown</li>
+          </ul>
+        </div>
+        <div class="waitlist-box">
+          <div class="waitlist-title">Συμβουλή Χρήστη &amp; Λίστα Ενημερώσεων (GDPR)</div>
+          <p class="waitlist-sub">Χωρίς χρέωση, χωρίς spam. Αποστολή μόνο ειδοποίησης διάθεσης.</p>
+          <form id="proWaitlistForm" class="waitlist-form" data-endpoint="https://conversionlogic-waitlist.conversionlogic.workers.dev" data-project="praktika-gr">
+            <select id="proWaitlistAdvice" class="input-select" aria-label="Τι μας συμβουλεύετε να προτεραιοποιήσουμε;">
+              <option value="multi_floor_pd1985">Excel Π.Δ. 1985 με Κενά &amp; Αποσυνδεδεμένα Διαμερίσματα</option>
+              <option value="sepa_iban_qr_notices">Αυτοματοποιημένα Ειδοποιητήρια A4 + SEPA IBAN QR (EPC069-12)</option>
+              <option value="assembly_minutes_pack">Πλήρες Αρχείο Πρακτικών Γ.Σ. &amp; Εξουσιοδοτήσεων (Ν. 3741/1929)</option>
+            </select>
+            <input type="email" id="proWaitlistEmail" class="input-text" placeholder="email διαχειριστή..." required aria-label="Email διαχειριστή">
+            <label class="waitlist-consent">
+              <input type="checkbox" id="proWaitlistConsent">
+              <span>Συναινώ ρητά στη χρήση του email μου αποκλειστικά για ενημερώσεις διαχείρισης πολυκατοικίας &amp; early access (GDPR Άρθρο 6 παρ. 1α, διαγραφή οποτεδήποτε).</span>
+            </label>
+            <button type="submit" id="proWaitlistBtn" class="btn btn-primary">Αποστολή Συμβουλής &amp; Εγγραφή</button>
+          </form>
+          <p id="proWaitlistMsg" class="waitlist-msg" role="status"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- VISIBLE FAQ SECTION (MATCHING FAQPage JSON-LD) -->
+    <section class="sheet faq-section no-print" aria-labelledby="faqHeading">
+      <h2 id="faqHeading" class="sheet-title">Συχνές Ερωτήσεις Νομοθεσίας &amp; Χρήσης</h2>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>Πώς υπολογίζεται η κατανομή αυτόνομης θέρμανσης στα κοινόχρηστα πολυκατοικίας;</summary>
+          <p>Σύμφωνα με το Π.Δ. 27.9/7.11.1985, η δαπάνη θέρμανσης κατανέμεται σε πάγιο ποσοστό βάσει συντελεστών ιδιοκτησίας (f<sub>i</sub>, ε<sub>i</sub>) και μεταβλητό ποσοστό βάσει ωρών αυτονομίας ή θερμιδομετρητών.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Ποια είναι η νόμιμη απαρτία σε Γενική Συνέλευση πολυκατοικίας;</summary>
+          <p>Βάσει του Ν. 3741/1929, η τακτική απαρτία στην πρώτη σύγκληση απαιτεί παρουσία άνω των 500/1000 χιλιοστών (501+ χιλιοστά), εφόσον δεν ορίζεται αυξημένη πλειοψηφία στον κανονισμό.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Τι ισχύει για αποσύνδεση από τη θέρμανση (Ν. 4495/2017 αρ. 127) &amp; τι QR παράγουν τα ειδοποιητήρια;</summary>
+          <p>Ένα νόμιμα αποσυνδεδεμένο διαμέρισμα (Ν. 4495/2017) μηδενίζεται στη θέρμανση (πάγιο &amp; ώρες) και το κόστος ανακατανέμεται στα συνδεδεμένα διαμερίσματα. Τα ειδοποιητήρια χρησιμοποιούν SEPA IBAN QR (EPC069-12), ενώ στοιχεία IRIS αναγράφονται χωριστά σε κείμενο.</p>
+        </details>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer no-print">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h3>Νομοθετική Αναφορά</h3>
+          <p>Π.Δ. 27.9/7.11.1985 (ΦΕΚ 631 Δ') περί κατανομής δαπανών κεντρικής/αυτόνομης θέρμανσης, Ν. 3741/1929, Ν. 4495/2017 &amp; ΑΚ 1002/1117.</p>
+        </div>
+        <div>
+          <h3>Όρια &amp; Ισχύς Κανονισμού</h3>
+          <p>Ο επιμέρους Κανονισμός Πολυκατοικίας υπερισχύει στις ειδικές απαρτίες/συντελεστές (f<sub>i</sub>, ε<sub>i</sub>). Ελέγχετε τη σύσταση οριζόντιας ιδιοκτησίας.</p>
+        </div>
+        <div>
+          <h3>Ανεξάρτητο Τεχνικό Εργαλείο</h3>
+          <p>Το Praktika GR (Conversionlogic) εκτελείται τοπικά στον browser χωρίς αποστολή οικονομικών ή προσωπικών στοιχείων ενοίκων.</p>
+        </div>
+      </div>
+      <div class="footer-tools-row">
+        <strong>Εργαλεία Conversionlogic:</strong>
+        <a href="https://athens-rental-monitor.pages.dev/" rel="noopener">Athens Rental</a> ·
+        <a href="https://greek-procurement-radar.pages.dev/" rel="noopener">Procurement Radar</a> ·
+        <a href="https://athens-relocation-matrix.pages.dev/" rel="noopener">Relocation Matrix</a> ·
+        <a href="https://eshop-compliance-doctor.pages.dev/" rel="noopener">eShop Audit</a> ·
+        <a href="https://espa-screener-gr.pages.dev/" rel="noopener">ESPA Screener</a> ·
+        <a href="https://scopekit-gr.pages.dev/" rel="noopener">ScopeKit GR</a>
+      </div>
+      <div class="footer-bottom">
+        <span>Conversionlogic · <a href="privacy.html" class="legal-link">Πολιτική Απορρήτου &amp; Νομική Σημείωση</a></span>
+        <span>Τελευταίος Τεχνικός Έλεγχος: 19/11/2026 · 0€ Validation Mode</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

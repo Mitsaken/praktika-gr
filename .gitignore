@@ -1,0 +1,8 @@
+*.pdf
+*.xlsx
+*.docx
+IRIS_QR_Notice_Generator.html
+SEPA_IBAN_QR_Notice_Generator.html
+Praktika_GS_Templates_Editable.md
+README_START_HERE.txt
+__pycache__/

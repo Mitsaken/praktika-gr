@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://praktika-gr.pages.dev/sitemap.xml
